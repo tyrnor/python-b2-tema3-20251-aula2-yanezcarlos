@@ -65,12 +65,12 @@ class LogMethodCalls(object):
 
 @LogMethodCalls(print_logs=PRINT_LOGS)
 def load_csv(filename: str) -> pd.DataFrame:
-    return pd.read_csv()
+    return pd.read_csv(filename)
 
 
 @LogMethodCalls(print_logs=PRINT_LOGS)
 def load_and_describe_csv(filename: str) -> pd.DataFrame:
-    dataframe: pd.DataFrame = pd.read_csv()
+    dataframe: pd.DataFrame = pd.read_csv(filename)
     return dataframe.describe()
 
 
