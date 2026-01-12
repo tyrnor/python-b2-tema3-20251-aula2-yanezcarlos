@@ -36,15 +36,21 @@ def measure_time(func: Callable) -> Callable:
 
     def wrapper(*args, **kwargs) -> Tuple[Any, float]:
         # Write here your code
-        pass
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        elapsed = end - start
+        print(f"Execution time of {func.__name__}: {elapsed} seconds.")
+        return result, elapsed
 
+    return wrapper
 
 @measure_time
 def df_to_json(df: pd.DataFrame, filename: str, path_output: Path) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     params = {"orient": "records", "lines": True}
     print(path_output / filename)
     df.to_json(path_output / filename, **params)
-    loaded_df = pd.read_json(path_output / filename, lines=, orient=params["orient"])
+    loaded_df = pd.read_json(path_output / filename, lines=params["lines"], orient=params["orient"])
     return loaded_df, params
 
 
@@ -54,9 +60,9 @@ def df_to_csv(df: pd.DataFrame, filename: str, path_output: Path) -> Tuple[pd.Da
     df.to_csv(path_output / filename, **params)
     loaded_df = pd.read_csv(
         path_output / filename,
-        sep=,
-        header=,
-        encoding=,
+        sep=params["sep"],
+        header=params["header"],
+        encoding=params["encoding"],
     )
     return loaded_df, params
 
@@ -64,8 +70,9 @@ def df_to_csv(df: pd.DataFrame, filename: str, path_output: Path) -> Tuple[pd.Da
 @measure_time
 def df_to_excel(df: pd.DataFrame, filename: str, path_output: Path) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     params = {"sheet_name": "Pandas to Excel"}
-    df.to_excel()
-    loaded_df = pd.read_excel()
+    output_path = path_output / filename
+    df.to_excel(output_path, **params)
+    loaded_df = pd.read_excel(output_path, sheet_name=params["sheet_name"])
     return loaded_df, params
 
 
