@@ -42,11 +42,11 @@ PRINT_LOGS: bool = True
 
 class LogMethodCalls(object):
     def __init__(self, print_logs: bool = True) -> None:
-        self.print_logs: bool = 
+        self.print_logs: bool = print_logs
 
     def __call__(self, func: Callable) -> Callable:
         def wrapped(*args: Any, **kwargs: Any) -> Any:
-            if :
+            if self.print_logs:
                 args_repr: list[str] = [
                     repr(a) for a in args
                 ]  # List of argument representations
@@ -55,7 +55,7 @@ class LogMethodCalls(object):
                 ]  # List of key=value representations
                 signature: str = ", ".join(args_repr + kwargs_repr)
                 logging.info("Calling %s (%s)", func.__name__, signature)
-            return 
+            return func(*args, **kwargs)
 
         return wrapped
 
