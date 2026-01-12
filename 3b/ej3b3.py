@@ -60,14 +60,14 @@ class DecoratorFactoryLogs:
         """
 
         def decorator(func: Callable) -> Callable:
-            @wraps
+            @wraps(func)
             def wrapper(*args: Any, **kwargs: Any) -> Any:
                 logging.info(
                     f"{message} Starting: {func.__name__} with args: {args}, kwargs: {kwargs}"
                 )
-                result = func()
+                result = func(*args, **kwargs)
                 logging.info(f"{message} Finishing: {func.__name__}")
-                return
+                return result
 
             return wrapper
 
@@ -83,9 +83,9 @@ class DecoratorFactoryLogs:
             def wrapper(*args: Any, **kwargs: Any) -> Any:
                 args_repr = [repr(a) for a in args]
                 kwargs_repr = [f"{k}={v!r}" for k, v in kwargs.items()]
-                signature =
+                signature = ",".join(args_repr + kwargs_repr)
                 logging.debug(f"{message} Executing: {func.__name__}({signature})")
-                return 
+                return func(*args, **kwargs)
 
             return wrapper
 
@@ -101,21 +101,22 @@ class DecoratorFactoryLogs:
         """
 
         def decorator(func: Callable) -> Callable:
-            @wraps
+            @wraps(func)
             def wrapper(*args: Any, **kwargs: Any) -> Any:
                 custom_logger = logging.getLogger(func.__name__)
                 handler = logging.FileHandler(filepath)
                 formatter = logging.Formatter(
                     "%(asctime)s - %(levelname)s - %(message)s"
                 )
-                handler.
-                custom_logger.
-                custom_logger.
+                handler.setFormatter(formatter)
+                custom_logger.addHandler(handler)
+                custom_logger.setLevel(logging.INFO)
                 custom_logger.info(
                     f"{message} Executing: {func.__name__} with args: {args}, kwargs: {kwargs}"
                 )
-                result = 
+                result = func(*args, **kwargs)
                 custom_logger.removeHandler(handler)  # Clean up handler
+                handler.close()
                 return result
 
             return wrapper
