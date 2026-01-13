@@ -26,11 +26,11 @@ from functools import partial
 def apply_discount(price: float, discount: float) -> float:
     """Applies a discount to the price and returns the final price."""
     # Write here your code
-    pass 
+    return price * (1 - discount / 100)
 
 
-vip_discount = partial(apply_discount, discount=)
-new_customer_discount = partial(apply_discount, discount=)
+vip_discount = partial(apply_discount, discount= 20)
+new_customer_discount = partial(apply_discount, discount= 10)
 
 
 # Para probar el código, descomenta las siguientes líneas
