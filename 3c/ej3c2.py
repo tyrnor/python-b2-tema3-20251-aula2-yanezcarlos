@@ -36,7 +36,7 @@ with open(path / "data/books_data.json", "r") as file:
 
 calculate_reading_time: callable = lambda book: round((book["pages"] * 250) / 200)
 books_with_reading_time: List[Dict] = list(
-    map(lambda book: {**book, "reading_time": }, books)
+    map(lambda book: {**book, "reading_time": calculate_reading_time(book)}, books)
 )
 
 
